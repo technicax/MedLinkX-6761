@@ -10,7 +10,6 @@ import Staff from './components/staff/Staff';
 import Emergency from './components/emergency/Emergency';
 import Reports from './components/reports/Reports';
 import Settings from './components/settings/Settings';
-import Compliance from './components/compliance/Compliance';
 import Login from './components/auth/Login';
 import PermissionGate from './components/common/PermissionGate';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -42,14 +41,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar 
-        isOpen={sidebarOpen} 
-        onToggle={() => setSidebarOpen(!sidebarOpen)} 
-      />
-      
+      <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
         <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
-        
         <main className="p-6">
           <AnimatePresence mode="wait">
             <Routes>
@@ -82,11 +76,6 @@ function AppContent() {
               <Route path="/reports" element={
                 <PermissionGate fallback={<AccessDenied />}>
                   <Reports />
-                </PermissionGate>
-              } />
-              <Route path="/compliance" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <Compliance />
                 </PermissionGate>
               } />
               <Route path="/settings" element={

@@ -24,7 +24,7 @@ const Header = ({ onMenuClick }) => {
           >
             <SafeIcon icon={FiMenu} className="w-5 h-5" />
           </button>
-
+          
           <div className="relative">
             <SafeIcon icon={FiSearch} className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
@@ -36,10 +36,11 @@ const Header = ({ onMenuClick }) => {
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* Connection Status - Simplified */}
           <div className="flex items-center space-x-2 text-sm">
             <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></div>
             <span className="text-gray-600">
-              {connected ? `${onlineUsers.length} online` : 'Disconnected'}
+              {connected ? `${onlineUsers.length} online` : 'Offline'}
             </span>
           </div>
 

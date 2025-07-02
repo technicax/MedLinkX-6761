@@ -4,10 +4,7 @@ import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
 import * as FiIcons from 'react-icons/fi';
 
-const { 
-  FiHome, FiMessageSquare, FiUsers, FiUserCheck, FiAlertTriangle, 
-  FiBarChart3, FiSettings, FiActivity, FiShield 
-} = FiIcons;
+const { FiHome, FiMessageSquare, FiUsers, FiUserCheck, FiAlertTriangle, FiBarChart3, FiSettings, FiActivity } = FiIcons;
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const menuItems = [
@@ -17,7 +14,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { path: '/staff', icon: FiUserCheck, label: 'Staff' },
     { path: '/emergency', icon: FiAlertTriangle, label: 'Emergency', badge: 2 },
     { path: '/reports', icon: FiBarChart3, label: 'Reports' },
-    { path: '/compliance', icon: FiShield, label: 'Compliance' },
     { path: '/settings', icon: FiSettings, label: 'Settings' }
   ];
 
