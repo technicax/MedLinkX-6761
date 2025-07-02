@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
 import { useAuth } from '../../contexts/AuthContext';
+import { useRBAC } from '../../contexts/RBACContext';
 import { useNotification } from '../../contexts/NotificationContext';
 import * as FiIcons from 'react-icons/fi';
 
-const { FiActivity, FiMail, FiLock, FiEye, FiEyeOff } = FiIcons;
+const { FiActivity, FiMail, FiLock, FiEye, FiEyeOff, FiUsers } = FiIcons;
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { login: rbacLogin } = useRBAC();
   const { addNotification } = useNotification();
 
   const handleSubmit = async (e) => {
@@ -20,17 +22,19 @@ const Login = () => {
     setLoading(true);
 
     try {
+      const user = rbacLogin(email);
       await login({ email, password });
+      
       addNotification({
         type: 'success',
         title: 'Login Successful',
-        message: 'Welcome to Hospital Communication System'
+        message: `Welcome ${user.name} - ${user.role.replace('_', ' ').toUpperCase()}`
       });
     } catch (error) {
       addNotification({
         type: 'error',
         title: 'Login Failed',
-        message: 'Invalid credentials. Please try again.'
+        message: 'Invalid credentials or user not found.'
       });
     } finally {
       setLoading(false);
@@ -65,7 +69,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="doctor@hospital.com"
+                  placeholder="Enter your email"
                   required
                 />
               </div>
@@ -107,11 +111,21 @@ const Login = () => {
           </form>
 
           <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-medium text-gray-900 mb-2">Demo Credentials:</h3>
-            <p className="text-sm text-gray-600">
-              Email: doctor@hospital.com<br />
-              Password: Any password
-            </p>
+            <h3 className="font-medium text-gray-900 mb-2">Demo Login:</h3>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <strong>Admin:</strong> admin@hospital.com<br />
+                <strong>Doctor:</strong> doctor@hospital.com<br />
+                <strong>Nurse:</strong> nurse@hospital.com<br />
+                <strong>Tech:</strong> technician@hospital.com
+              </div>
+              <div>
+                <strong>Reception:</strong> receptionist@hospital.com<br />
+                <strong>Pharmacy:</strong> pharmacist@hospital.com<br />
+                <strong>Security:</strong> security@hospital.com<br />
+                <strong>Password:</strong> Any password
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>

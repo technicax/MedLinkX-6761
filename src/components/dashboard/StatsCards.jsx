@@ -70,11 +70,8 @@ const StatsCards = () => {
               <SafeIcon icon={stat.icon} className="w-6 h-6" />
             </div>
           </div>
-          
           <div className="mt-4">
-            <span className={`text-sm font-medium ${
-              stat.trend === 'up' ? 'text-green-600' : 'text-red-600'
-            }`}>
+            <span className={`text-sm font-medium ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
               {stat.change}
             </span>
             <span className="text-sm text-gray-500 ml-1">from last week</span>

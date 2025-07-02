@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading user data
     const savedUser = localStorage.getItem('hcs_user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
@@ -24,19 +23,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (credentials) => {
-    // Simulate login
-    const mockUser = {
-      id: '1',
-      name: 'Dr. Sarah Johnson',
-      email: credentials.email,
-      role: 'doctor',
-      department: 'Emergency Medicine',
-      avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face'
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem('hcs_user', JSON.stringify(mockUser));
-    return mockUser;
+    return Promise.resolve();
   };
 
   const logout = () => {

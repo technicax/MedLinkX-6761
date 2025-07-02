@@ -58,7 +58,6 @@ const RecentActivity = () => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
-      
       <div className="space-y-4">
         {activities.map((activity, index) => (
           <motion.div
@@ -71,17 +70,14 @@ const RecentActivity = () => {
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${getIconColor(activity.color)}`}>
               <SafeIcon icon={activity.icon} className="w-4 h-4" />
             </div>
-            
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900">{activity.message}</p>
               <p className="text-xs text-gray-500">{activity.user}</p>
             </div>
-            
             <div className="text-xs text-gray-400">{activity.time}</div>
           </motion.div>
         ))}
       </div>
-      
       <button className="w-full mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium">
         View All Activity
       </button>

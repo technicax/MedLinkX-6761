@@ -23,7 +23,6 @@ export const NotificationProvider = ({ children }) => {
     const newNotification = { ...notification, id };
     setNotifications(prev => [...prev, newNotification]);
 
-    // Auto remove after 5 seconds
     setTimeout(() => {
       removeNotification(id);
     }, 5000);
@@ -56,7 +55,6 @@ export const NotificationProvider = ({ children }) => {
   return (
     <NotificationContext.Provider value={{ addNotification, removeNotification }}>
       {children}
-      
       <div className="fixed top-4 right-4 z-50 space-y-2">
         <AnimatePresence>
           {notifications.map((notification) => (
@@ -68,10 +66,7 @@ export const NotificationProvider = ({ children }) => {
               className={`p-4 rounded-lg border shadow-lg max-w-sm ${getColors(notification.type)}`}
             >
               <div className="flex items-start">
-                <SafeIcon 
-                  icon={getIcon(notification.type)} 
-                  className="w-5 h-5 mt-0.5 mr-3 flex-shrink-0" 
-                />
+                <SafeIcon icon={getIcon(notification.type)} className="w-5 h-5 mt-0.5 mr-3 flex-shrink-0" />
                 <div className="flex-1">
                   <h4 className="font-medium">{notification.title}</h4>
                   {notification.message && (

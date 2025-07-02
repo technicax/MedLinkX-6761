@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
 import { useAuth } from '../../contexts/AuthContext';
+import { useRBAC } from '../../contexts/RBACContext';
 import { useSocket } from '../../contexts/SocketContext';
 import * as FiIcons from 'react-icons/fi';
 
-const { FiMenu, FiBell, FiSearch, FiChevronDown, FiLogOut } = FiIcons;
+const { FiMenu, FiBell, FiSearch, FiChevronDown, FiLogOut, FiUser } = FiIcons;
 
 const Header = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
+  const { currentUser } = useRBAC();
   const { connected, onlineUsers } = useSocket();
   const [showProfile, setShowProfile] = useState(false);
 
@@ -52,13 +54,15 @@ const Header = ({ onMenuClick }) => {
               className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
               <img
-                src={user?.avatar}
-                alt={user?.name}
+                src={currentUser?.avatar || user?.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'}
+                alt={currentUser?.name || user?.name || 'User'}
                 className="w-8 h-8 rounded-full object-cover"
               />
               <div className="text-left">
-                <div className="text-sm font-medium text-gray-900">{user?.name}</div>
-                <div className="text-xs text-gray-500">{user?.role}</div>
+                <div className="text-sm font-medium text-gray-900">
+                  {currentUser?.name || user?.name || 'User'}
+                </div>
+                <div className="text-xs text-gray-500">{currentUser?.role?.replace('_', ' ') || 'Role'}</div>
               </div>
               <SafeIcon icon={FiChevronDown} className="w-4 h-4 text-gray-400" />
             </button>
@@ -67,8 +71,18 @@ const Header = ({ onMenuClick }) => {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2"
+                className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2"
               >
+                <div className="px-4 py-3 border-b border-gray-200">
+                  <div className="font-medium text-gray-900">{currentUser?.name || 'User'}</div>
+                  <div className="text-sm text-gray-600">{currentUser?.email || 'email@example.com'}</div>
+                </div>
+                
+                <button className="flex items-center space-x-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700">
+                  <SafeIcon icon={FiUser} className="w-4 h-4" />
+                  <span>Profile Settings</span>
+                </button>
+                
                 <button
                   onClick={() => {
                     logout();

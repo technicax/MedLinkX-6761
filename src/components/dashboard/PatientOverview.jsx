@@ -26,18 +26,14 @@ const PatientOverview = () => {
         type: 'line',
         data: [15, 23, 18, 32, 28, 19, 24],
         smooth: true,
-        itemStyle: {
-          color: '#3B82F6'
-        }
+        itemStyle: { color: '#3B82F6' }
       },
       {
         name: 'Discharges',
         type: 'line',
         data: [12, 19, 15, 28, 25, 16, 21],
         smooth: true,
-        itemStyle: {
-          color: '#10B981'
-        }
+        itemStyle: { color: '#10B981' }
       }
     ],
     grid: {
@@ -62,9 +58,11 @@ const PatientOverview = () => {
           <option>This Year</option>
         </select>
       </div>
-      
       <div className="h-64">
-        <ReactECharts option={chartOption} style={{ height: '100%', width: '100%' }} />
+        <ReactECharts
+          option={chartOption}
+          style={{ height: '100%', width: '100%' }}
+        />
       </div>
     </motion.div>
   );

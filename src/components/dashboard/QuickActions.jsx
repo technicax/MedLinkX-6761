@@ -53,7 +53,6 @@ const QuickActions = () => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-      
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {actions.map((action, index) => (
           <motion.button

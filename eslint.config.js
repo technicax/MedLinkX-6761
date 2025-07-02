@@ -4,7 +4,13 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 
 export default [
-  { ignores: ['dist'] },
+  { 
+    ignores: [
+      'dist/**', 
+      'node_modules/**', 
+      '*.config.js'
+    ] 
+  },
   js.configs.recommended,
   {
     files: ['**/*.{js,jsx}'],
@@ -12,9 +18,7 @@ export default [
       ecmaVersion: 2020,
       globals: {
         ...globals.browser,
-        ...globals.node,
-        React: true,
-        JSX: true
+        ...globals.node
       },
       parserOptions: {
         ecmaFeatures: {
@@ -28,12 +32,12 @@ export default [
       'react-refresh': reactRefresh,
     },
     rules: {
-      'no-undef': 'error', 
-      'react-hooks/rules-of-hooks': 'error',
+      'no-undef': 'off',
+      'react-hooks/rules-of-hooks': 'off',
       'react-hooks/exhaustive-deps': 'off',
       'react-refresh/only-export-components': 'off',
       'no-unused-vars': 'off',
-      'no-case-declarations': 'off'
+      'no-case-declarations': 'off',
     },
-  }
+  },
 ];

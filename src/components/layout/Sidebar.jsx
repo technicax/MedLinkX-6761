@@ -1,17 +1,12 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
 import * as FiIcons from 'react-icons/fi';
 
-const { 
-  FiHome, FiMessageSquare, FiUsers, FiUserCheck, 
-  FiAlertTriangle, FiBarChart3, FiSettings, FiActivity 
-} = FiIcons;
+const { FiHome, FiMessageSquare, FiUsers, FiUserCheck, FiAlertTriangle, FiBarChart3, FiSettings, FiActivity } = FiIcons;
 
 const Sidebar = ({ isOpen, onToggle }) => {
-  const location = useLocation();
-
   const menuItems = [
     { path: '/dashboard', icon: FiHome, label: 'Dashboard' },
     { path: '/messages', icon: FiMessageSquare, label: 'Messages', badge: 3 },
@@ -19,7 +14,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { path: '/staff', icon: FiUserCheck, label: 'Staff' },
     { path: '/emergency', icon: FiAlertTriangle, label: 'Emergency', badge: 2 },
     { path: '/reports', icon: FiBarChart3, label: 'Reports' },
-    { path: '/settings', icon: FiSettings, label: 'Settings' },
+    { path: '/settings', icon: FiSettings, label: 'Settings' }
   ];
 
   return (
@@ -93,7 +88,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
               className="text-sm"
             >
               <div className="font-medium text-gray-900">Online</div>
-              <div className="text-gray-500">All systems operational</div>
+              <div className="text-gray-500">System operational</div>
             </motion.div>
           )}
         </div>

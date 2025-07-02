@@ -14,10 +14,8 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const { addNotification } = useNotification();
 
   useEffect(() => {
-    // Simulate WebSocket connection
     const timer = setTimeout(() => {
       setConnected(true);
       setOnlineUsers([
@@ -27,28 +25,10 @@ export const SocketProvider = ({ children }) => {
       ]);
     }, 1000);
 
-    // Simulate real-time notifications
-    const notificationTimer = setInterval(() => {
-      const notifications = [
-        { type: 'info', title: 'New Lab Result', message: 'Patient #1234 - Blood work complete' },
-        { type: 'warning', title: 'Medication Alert', message: 'Patient #5678 - Check drug interactions' },
-        { type: 'success', title: 'Discharge Ready', message: 'Patient #9012 cleared for discharge' },
-      ];
-      
-      const randomNotification = notifications[Math.floor(Math.random() * notifications.length)];
-      if (Math.random() > 0.7) { // 30% chance every 10 seconds
-        addNotification(randomNotification);
-      }
-    }, 10000);
-
-    return () => {
-      clearTimeout(timer);
-      clearInterval(notificationTimer);
-    };
-  }, [addNotification]);
+    return () => clearTimeout(timer);
+  }, []);
 
   const sendMessage = (message) => {
-    // Simulate sending message
     console.log('Sending message:', message);
     return Promise.resolve();
   };

@@ -62,7 +62,6 @@ const AlertsPanel = () => {
           {alerts.length} Active
         </span>
       </div>
-      
       <div className="space-y-3">
         {alerts.map((alert, index) => (
           <motion.div
@@ -73,10 +72,7 @@ const AlertsPanel = () => {
             className={`p-3 rounded-lg border ${getPriorityColor(alert.priority)}`}
           >
             <div className="flex items-start space-x-3">
-              <SafeIcon 
-                icon={alert.icon} 
-                className={`w-5 h-5 mt-0.5 ${getIconColor(alert.priority)}`} 
-              />
+              <SafeIcon icon={alert.icon} className={`w-5 h-5 mt-0.5 ${getIconColor(alert.priority)}`} />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900">{alert.title}</p>
                 <p className="text-xs text-gray-600 mt-1">{alert.description}</p>
@@ -86,7 +82,6 @@ const AlertsPanel = () => {
           </motion.div>
         ))}
       </div>
-      
       <button className="w-full mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium">
         View All Alerts
       </button>
