@@ -10,12 +10,15 @@ import Staff from './components/staff/Staff';
 import Emergency from './components/emergency/Emergency';
 import Reports from './components/reports/Reports';
 import Settings from './components/settings/Settings';
+import OrganizationDashboard from './components/organization/OrganizationDashboard';
+import BusinessUnitManager from './components/organization/BusinessUnitManager';
 import Login from './components/auth/Login';
 import PermissionGate from './components/common/PermissionGate';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { RBACProvider, useRBAC } from './contexts/RBACContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { SocketProvider } from './contexts/SocketContext';
+import { OrganizationProvider } from './contexts/OrganizationContext';
 import './App.css';
 
 function AppContent() {
@@ -41,74 +44,61 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      <Sidebar 
-        isOpen={sidebarOpen} 
-        onToggle={() => setSidebarOpen(!sidebarOpen)} 
+      <Sidebar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
-      
       <div className={`flex-1 transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-16'}`}>
         <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
-        
         <main className="p-6">
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <PermissionGate fallback={<AccessDenied />}>
-                    <Dashboard />
-                  </PermissionGate>
-                } 
-              />
-              <Route 
-                path="/messages" 
-                element={
-                  <PermissionGate fallback={<AccessDenied />}>
-                    <Messages />
-                  </PermissionGate>
-                } 
-              />
-              <Route 
-                path="/patients" 
-                element={
-                  <PermissionGate fallback={<AccessDenied />}>
-                    <Patients />
-                  </PermissionGate>
-                } 
-              />
-              <Route 
-                path="/staff" 
-                element={
-                  <PermissionGate fallback={<AccessDenied />}>
-                    <Staff />
-                  </PermissionGate>
-                } 
-              />
-              <Route 
-                path="/emergency" 
-                element={
-                  <PermissionGate fallback={<AccessDenied />}>
-                    <Emergency />
-                  </PermissionGate>
-                } 
-              />
-              <Route 
-                path="/reports" 
-                element={
-                  <PermissionGate fallback={<AccessDenied />}>
-                    <Reports />
-                  </PermissionGate>
-                } 
-              />
-              <Route 
-                path="/settings" 
-                element={
-                  <PermissionGate fallback={<AccessDenied />}>
-                    <Settings />
-                  </PermissionGate>
-                } 
-              />
+              <Route path="/dashboard" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <Dashboard />
+                </PermissionGate>
+              } />
+              <Route path="/messages" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <Messages />
+                </PermissionGate>
+              } />
+              <Route path="/patients" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <Patients />
+                </PermissionGate>
+              } />
+              <Route path="/staff" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <Staff />
+                </PermissionGate>
+              } />
+              <Route path="/emergency" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <Emergency />
+                </PermissionGate>
+              } />
+              <Route path="/reports" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <Reports />
+                </PermissionGate>
+              } />
+              <Route path="/organization" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <OrganizationDashboard />
+                </PermissionGate>
+              } />
+              <Route path="/business-units" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <BusinessUnitManager />
+                </PermissionGate>
+              } />
+              <Route path="/settings" element={
+                <PermissionGate fallback={<AccessDenied />}>
+                  <Settings />
+                </PermissionGate>
+              } />
             </Routes>
           </AnimatePresence>
         </main>
@@ -139,9 +129,11 @@ function App() {
       <RBACProvider>
         <AuthProvider>
           <NotificationProvider>
-            <SocketProvider>
-              <AppContent />
-            </SocketProvider>
+            <OrganizationProvider>
+              <SocketProvider>
+                <AppContent />
+              </SocketProvider>
+            </OrganizationProvider>
           </NotificationProvider>
         </AuthProvider>
       </RBACProvider>

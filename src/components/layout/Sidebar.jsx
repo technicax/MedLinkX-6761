@@ -3,12 +3,17 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
 import { useRBAC } from '../../contexts/RBACContext';
+import { useOrganization } from '../../contexts/OrganizationContext';
 import * as FiIcons from 'react-icons/fi';
 
-const { FiHome, FiMessageSquare, FiUsers, FiUserCheck, FiAlertTriangle, FiBarChart3, FiSettings, FiActivity } = FiIcons;
+const { 
+  FiHome, FiMessageSquare, FiUsers, FiUserCheck, FiAlertTriangle, 
+  FiBarChart3, FiSettings, FiActivity, FiBuilding, FiGlobe 
+} = FiIcons;
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const { currentUser } = useRBAC();
+  const { currentOrganization, currentBusinessUnit } = useOrganization();
   const location = useLocation();
 
   const menuItems = [
@@ -18,6 +23,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { path: '/staff', icon: FiUserCheck, label: 'Staff' },
     { path: '/emergency', icon: FiAlertTriangle, label: 'Emergency', badge: 2 },
     { path: '/reports', icon: FiBarChart3, label: 'Reports' },
+    { path: '/organization', icon: FiGlobe, label: 'Organization' },
+    { path: '/business-units', icon: FiBuilding, label: 'Business Units' },
     { path: '/settings', icon: FiSettings, label: 'Settings' }
   ];
 
@@ -37,9 +44,16 @@ const Sidebar = ({ isOpen, onToggle }) => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-xl font-bold text-gray-900"
+              className="min-w-0 flex-1"
             >
-              MedLinkX
+              <div className="text-xl font-bold text-gray-900 truncate">
+                {currentOrganization?.name || 'MedLinkX'}
+              </div>
+              {currentBusinessUnit && (
+                <div className="text-xs text-gray-600 truncate">
+                  {currentBusinessUnit.name}
+                </div>
+              )}
             </motion.div>
           )}
         </div>
@@ -60,7 +74,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
             }
           >
             <SafeIcon icon={item.icon} className="w-5 h-5 flex-shrink-0" />
-            
             {isOpen && (
               <motion.span
                 initial={{ opacity: 0 }}
@@ -116,7 +129,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
             />
             <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
           </div>
-          
           {isOpen && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -129,6 +141,11 @@ const Sidebar = ({ isOpen, onToggle }) => {
               <div className="text-gray-500 truncate">
                 {currentUser?.role?.replace('_', ' ') || 'Online'}
               </div>
+              {currentBusinessUnit && (
+                <div className="text-xs text-blue-600 truncate">
+                  📍 {currentBusinessUnit.location.city}
+                </div>
+              )}
             </motion.div>
           )}
         </div>

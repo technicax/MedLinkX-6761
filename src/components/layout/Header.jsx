@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
+import OrganizationSwitcher from '../common/OrganizationSwitcher';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRBAC } from '../../contexts/RBACContext';
 import { useSocket } from '../../contexts/SocketContext';
+import { useOrganization } from '../../contexts/OrganizationContext';
 import * as FiIcons from 'react-icons/fi';
 
 const { FiMenu, FiBell, FiSearch, FiChevronDown, FiLogOut, FiUser, FiSettings } = FiIcons;
@@ -13,6 +15,7 @@ const Header = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
   const { currentUser } = useRBAC();
   const { connected, onlineUsers } = useSocket();
+  const { currentBusinessUnit } = useOrganization();
   const [showProfile, setShowProfile] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -24,7 +27,6 @@ const Header = ({ onMenuClick }) => {
     if (searchTerm.trim()) {
       // Navigate to appropriate page based on search term
       const term = searchTerm.toLowerCase();
-      
       if (term.includes('patient') || term.includes('p-') || term.includes('room')) {
         navigate('/patients');
       } else if (term.includes('staff') || term.includes('doctor') || term.includes('nurse')) {
@@ -39,7 +41,6 @@ const Header = ({ onMenuClick }) => {
         // Default to patients page for general searches
         navigate('/patients');
       }
-      
       setSearchTerm('');
       setShowSearch(false);
     }
@@ -59,14 +60,26 @@ const Header = ({ onMenuClick }) => {
   const getPageTitle = () => {
     const path = location.pathname;
     switch (path) {
-      case '/dashboard': return 'Dashboard';
-      case '/messages': return 'Messages';
-      case '/patients': return 'Patients';
-      case '/staff': return 'Staff';
-      case '/emergency': return 'Emergency';
-      case '/reports': return 'Reports';
-      case '/settings': return 'Settings';
-      default: return 'Hospital Communication System';
+      case '/dashboard':
+        return 'Dashboard';
+      case '/messages':
+        return 'Messages';
+      case '/patients':
+        return 'Patients';
+      case '/staff':
+        return 'Staff';
+      case '/emergency':
+        return 'Emergency';
+      case '/reports':
+        return 'Reports';
+      case '/settings':
+        return 'Settings';
+      case '/organization':
+        return 'Organization';
+      case '/business-units':
+        return 'Business Units';
+      default:
+        return 'Hospital Communication System';
     }
   };
 
@@ -80,10 +93,15 @@ const Header = ({ onMenuClick }) => {
           >
             <SafeIcon icon={FiMenu} className="w-5 h-5" />
           </button>
-          
+
           {/* Page Title */}
           <div className="hidden md:block">
             <h1 className="text-lg font-semibold text-gray-900">{getPageTitle()}</h1>
+            {currentBusinessUnit && (
+              <p className="text-xs text-gray-500">
+                {currentBusinessUnit.name} • {currentBusinessUnit.location.city}
+              </p>
+            )}
           </div>
 
           {/* Search Bar */}
@@ -124,6 +142,9 @@ const Header = ({ onMenuClick }) => {
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* Organization Switcher */}
+          <OrganizationSwitcher />
+
           {/* Connection Status */}
           <div className="hidden md:flex items-center space-x-2 text-sm">
             <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></div>
@@ -133,7 +154,7 @@ const Header = ({ onMenuClick }) => {
           </div>
 
           {/* Notifications */}
-          <button 
+          <button
             className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
             onClick={() => navigate('/emergency')}
             title="Emergency Alerts"
@@ -185,6 +206,11 @@ const Header = ({ onMenuClick }) => {
                   <div className="text-xs text-gray-500 mt-1">
                     {currentUser?.department || 'Department'}
                   </div>
+                  {currentBusinessUnit && (
+                    <div className="text-xs text-blue-600 mt-1">
+                      📍 {currentBusinessUnit.name}
+                    </div>
+                  )}
                 </div>
 
                 {/* Menu Items */}
@@ -195,15 +221,13 @@ const Header = ({ onMenuClick }) => {
                   <SafeIcon icon={FiUser} className="w-4 h-4" />
                   <span>Profile Settings</span>
                 </button>
-
                 <button
-                  onClick={() => handleProfileNavigation('/settings')}
+                  onClick={() => handleProfileNavigation('/organization')}
                   className="flex items-center space-x-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
                 >
                   <SafeIcon icon={FiSettings} className="w-4 h-4" />
-                  <span>System Settings</span>
+                  <span>Organization Settings</span>
                 </button>
-
                 <button
                   onClick={() => handleProfileNavigation('/emergency')}
                   className="flex items-center space-x-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
@@ -211,9 +235,7 @@ const Header = ({ onMenuClick }) => {
                   <SafeIcon icon={FiBell} className="w-4 h-4" />
                   <span>Notifications</span>
                 </button>
-
                 <hr className="my-2" />
-
                 <button
                   onClick={handleLogout}
                   className="flex items-center space-x-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-red-600 transition-colors"
