@@ -5,29 +5,42 @@ import * as FiIcons from 'react-icons/fi';
 
 const { FiUsers, FiHeart, FiAlertTriangle, FiTrendingUp, FiClock, FiUserCheck } = FiIcons;
 
-const PatientStats = () => {
+const PatientStats = ({ patients = [], site }) => {
+  // Calculate stats from actual patient data
+  const totalPatients = patients.length;
+  const criticalCases = patients.filter(p => p.status === 'critical').length;
+  const stablePatients = patients.filter(p => p.status === 'stable').length;
+  const avgLengthOfStay = '3.2 days'; // This would be calculated from actual data
+  const dischargesToday = patients.filter(p => {
+    const today = new Date().toDateString();
+    return p.dischargeDate && new Date(p.dischargeDate).toDateString() === today;
+  }).length;
+  
+  // Calculate bed occupancy based on site capacity
+  const bedOccupancy = site ? Math.round((totalPatients / site.beds) * 100) : 0;
+
   const stats = [
     {
       title: 'Total Patients',
-      value: '247',
+      value: totalPatients.toString(),
       change: '+12',
       trend: 'up',
       icon: FiUsers,
       color: 'blue',
-      description: 'Currently in hospital'
+      description: `Currently in ${site?.shortName || 'hospital'}`
     },
     {
       title: 'Critical Cases',
-      value: '8',
-      change: '-2',
-      trend: 'down',
+      value: criticalCases.toString(),
+      change: criticalCases > 5 ? '+2' : '-2',
+      trend: criticalCases > 5 ? 'up' : 'down',
       icon: FiAlertTriangle,
       color: 'red',
       description: 'Requiring immediate attention'
     },
     {
       title: 'Stable Patients',
-      value: '156',
+      value: stablePatients.toString(),
       change: '+5',
       trend: 'up',
       icon: FiHeart,
@@ -36,16 +49,16 @@ const PatientStats = () => {
     },
     {
       title: 'Avg Length of Stay',
-      value: '3.2 days',
+      value: avgLengthOfStay,
       change: '-0.3',
       trend: 'down',
       icon: FiClock,
       color: 'purple',
-      description: 'Hospital average'
+      description: `${site?.shortName || 'Hospital'} average`
     },
     {
       title: 'Discharges Today',
-      value: '15',
+      value: dischargesToday.toString(),
       change: '+3',
       trend: 'up',
       icon: FiUserCheck,
@@ -54,12 +67,12 @@ const PatientStats = () => {
     },
     {
       title: 'Bed Occupancy',
-      value: '89%',
+      value: `${bedOccupancy}%`,
       change: '+2%',
       trend: 'up',
       icon: FiTrendingUp,
       color: 'yellow',
-      description: 'Current capacity'
+      description: `${totalPatients}/${site?.beds || 0} beds used`
     }
   ];
 
@@ -105,18 +118,17 @@ const PatientStats = () => {
               {stat.trend === 'up' ? '↗' : '↘'} {stat.change}
             </div>
           </div>
-          
           <div>
             <h3 className="text-sm font-medium text-gray-600 mb-1">{stat.title}</h3>
             <p className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</p>
             <p className="text-sm text-gray-500">{stat.description}</p>
           </div>
-
-          {/* Mini progress bar for certain stats */}
+          
+          {/* Mini progress bar for bed occupancy */}
           {stat.title === 'Bed Occupancy' && (
             <div className="mt-4">
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
+                <div 
                   className={`h-2 rounded-full ${getBgColor(stat.color)}`}
                   style={{ width: stat.value }}
                 ></div>

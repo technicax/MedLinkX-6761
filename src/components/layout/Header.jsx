@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
-import OrganizationSwitcher from '../common/OrganizationSwitcher';
+import SiteSelector from './SiteSelector';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRBAC } from '../../contexts/RBACContext';
+import { useSite } from '../../contexts/SiteContext';
 import { useSocket } from '../../contexts/SocketContext';
-import { useOrganization } from '../../contexts/OrganizationContext';
 import * as FiIcons from 'react-icons/fi';
 
 const { FiMenu, FiBell, FiSearch, FiChevronDown, FiLogOut, FiUser, FiSettings } = FiIcons;
@@ -14,8 +14,8 @@ const { FiMenu, FiBell, FiSearch, FiChevronDown, FiLogOut, FiUser, FiSettings } 
 const Header = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
   const { currentUser } = useRBAC();
+  const { currentSite } = useSite();
   const { connected, onlineUsers } = useSocket();
-  const { currentBusinessUnit } = useOrganization();
   const [showProfile, setShowProfile] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showSearch, setShowSearch] = useState(false);
@@ -25,7 +25,7 @@ const Header = ({ onMenuClick }) => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      // Navigate to appropriate page based on search term
+      // Site-specific search
       const term = searchTerm.toLowerCase();
       if (term.includes('patient') || term.includes('p-') || term.includes('room')) {
         navigate('/patients');
@@ -38,7 +38,6 @@ const Header = ({ onMenuClick }) => {
       } else if (term.includes('report') || term.includes('analytics')) {
         navigate('/reports');
       } else {
-        // Default to patients page for general searches
         navigate('/patients');
       }
       setSearchTerm('');
@@ -59,29 +58,24 @@ const Header = ({ onMenuClick }) => {
 
   const getPageTitle = () => {
     const path = location.pathname;
+    const sitePrefix = currentSite ? `${currentSite.shortName} - ` : '';
+    
     switch (path) {
-      case '/dashboard':
-        return 'Dashboard';
-      case '/messages':
-        return 'Messages';
-      case '/patients':
-        return 'Patients';
-      case '/staff':
-        return 'Staff';
-      case '/emergency':
-        return 'Emergency';
-      case '/reports':
-        return 'Reports';
-      case '/settings':
-        return 'Settings';
-      case '/organization':
-        return 'Organization';
-      case '/business-units':
-        return 'Business Units';
-      default:
-        return 'Hospital Communication System';
+      case '/dashboard': return `${sitePrefix}Dashboard`;
+      case '/messages': return `${sitePrefix}Messages`;
+      case '/patients': return `${sitePrefix}Patients`;
+      case '/staff': return `${sitePrefix}Staff`;
+      case '/emergency': return `${sitePrefix}Emergency`;
+      case '/reports': return `${sitePrefix}Reports`;
+      case '/settings': return `${sitePrefix}Settings`;
+      default: return `${sitePrefix}Hospital Communication System`;
     }
   };
+
+  // Site-specific online users count
+  const siteOnlineUsers = onlineUsers.filter(user => 
+    currentSite ? user.siteId === currentSite.id : true
+  );
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-30">
@@ -94,13 +88,14 @@ const Header = ({ onMenuClick }) => {
             <SafeIcon icon={FiMenu} className="w-5 h-5" />
           </button>
 
+          {/* Site Selector */}
+          <SiteSelector />
+
           {/* Page Title */}
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <h1 className="text-lg font-semibold text-gray-900">{getPageTitle()}</h1>
-            {currentBusinessUnit && (
-              <p className="text-xs text-gray-500">
-                {currentBusinessUnit.name} • {currentBusinessUnit.location.city}
-              </p>
+            {currentSite && (
+              <p className="text-xs text-gray-500">{currentSite.name}</p>
             )}
           </div>
 
@@ -120,7 +115,7 @@ const Header = ({ onMenuClick }) => {
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search patients, staff, or records..."
+                    placeholder={`Search ${currentSite?.shortName || 'hospital'} records...`}
                     className="pl-10 pr-4 py-2 w-80 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     autoFocus
                     onBlur={() => {
@@ -142,18 +137,18 @@ const Header = ({ onMenuClick }) => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Organization Switcher */}
-          <OrganizationSwitcher />
-
-          {/* Connection Status */}
+          {/* Site-specific Connection Status */}
           <div className="hidden md:flex items-center space-x-2 text-sm">
             <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></div>
             <span className="text-gray-600">
-              {connected ? `${onlineUsers.length} online` : 'Offline'}
+              {connected ? `${siteOnlineUsers.length} online` : 'Offline'}
             </span>
+            {currentSite && (
+              <span className="text-xs text-gray-500">• {currentSite.shortName}</span>
+            )}
           </div>
 
-          {/* Notifications */}
+          {/* Site-specific Notifications */}
           <button
             className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
             onClick={() => navigate('/emergency')}
@@ -181,7 +176,7 @@ const Header = ({ onMenuClick }) => {
                   {currentUser?.name || user?.name || 'User'}
                 </div>
                 <div className="text-xs text-gray-500">
-                  {currentUser?.role?.replace('_', ' ') || 'Role'}
+                  {currentUser?.role?.replace('_', ' ') || 'Role'} • {currentSite?.shortName}
                 </div>
               </div>
               <SafeIcon icon={FiChevronDown} className="w-4 h-4 text-gray-400" />
@@ -204,13 +199,8 @@ const Header = ({ onMenuClick }) => {
                     {currentUser?.email || 'email@example.com'}
                   </div>
                   <div className="text-xs text-gray-500 mt-1">
-                    {currentUser?.department || 'Department'}
+                    {currentUser?.department || 'Department'} • {currentSite?.name}
                   </div>
-                  {currentBusinessUnit && (
-                    <div className="text-xs text-blue-600 mt-1">
-                      📍 {currentBusinessUnit.name}
-                    </div>
-                  )}
                 </div>
 
                 {/* Menu Items */}
@@ -222,11 +212,11 @@ const Header = ({ onMenuClick }) => {
                   <span>Profile Settings</span>
                 </button>
                 <button
-                  onClick={() => handleProfileNavigation('/organization')}
+                  onClick={() => handleProfileNavigation('/settings')}
                   className="flex items-center space-x-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-gray-700 transition-colors"
                 >
                   <SafeIcon icon={FiSettings} className="w-4 h-4" />
-                  <span>Organization Settings</span>
+                  <span>System Settings</span>
                 </button>
                 <button
                   onClick={() => handleProfileNavigation('/emergency')}
@@ -235,7 +225,9 @@ const Header = ({ onMenuClick }) => {
                   <SafeIcon icon={FiBell} className="w-4 h-4" />
                   <span>Notifications</span>
                 </button>
+
                 <hr className="my-2" />
+
                 <button
                   onClick={handleLogout}
                   className="flex items-center space-x-2 w-full px-4 py-2 text-left hover:bg-gray-50 text-red-600 transition-colors"
@@ -257,7 +249,7 @@ const Header = ({ onMenuClick }) => {
           className="absolute top-full left-6 right-6 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
         >
           <div className="p-2">
-            <div className="text-xs text-gray-500 mb-2">Quick suggestions:</div>
+            <div className="text-xs text-gray-500 mb-2">Quick suggestions for {currentSite?.shortName}:</div>
             <div className="space-y-1">
               {[
                 { label: 'Search Patients', action: () => navigate('/patients') },

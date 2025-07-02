@@ -1,58 +1,55 @@
 import React from 'react';
 import SafeIcon from '../../common/SafeIcon';
-import { useRBAC } from '../../contexts/RBACContext';
 import * as FiIcons from 'react-icons/fi';
 
 const { FiShield, FiActivity, FiUser, FiTool, FiPhone, FiPackage } = FiIcons;
 
 const RoleBadge = ({ role, size = 'md', showIcon = true, showText = true }) => {
-  const { ROLES } = useRBAC();
-
   const roleConfig = {
-    [ROLES.SUPER_ADMIN]: {
+    'super_admin': {
       icon: FiShield,
       label: 'Super Admin',
       color: 'bg-red-100 text-red-800 border-red-200'
     },
-    [ROLES.ADMIN]: {
+    'admin': {
       icon: FiShield,
       label: 'Admin',
       color: 'bg-purple-100 text-purple-800 border-purple-200'
     },
-    [ROLES.DOCTOR]: {
+    'doctor': {
       icon: FiActivity,
       label: 'Doctor',
       color: 'bg-blue-100 text-blue-800 border-blue-200'
     },
-    [ROLES.NURSE]: {
+    'nurse': {
       icon: FiUser,
       label: 'Nurse',
       color: 'bg-green-100 text-green-800 border-green-200'
     },
-    [ROLES.TECHNICIAN]: {
+    'technician': {
       icon: FiTool,
       label: 'Technician',
       color: 'bg-orange-100 text-orange-800 border-orange-200'
     },
-    [ROLES.RECEPTIONIST]: {
+    'receptionist': {
       icon: FiPhone,
       label: 'Receptionist',
       color: 'bg-pink-100 text-pink-800 border-pink-200'
     },
-    [ROLES.PHARMACIST]: {
+    'pharmacist': {
       icon: FiPackage,
       label: 'Pharmacist',
       color: 'bg-indigo-100 text-indigo-800 border-indigo-200'
     },
-    [ROLES.SECURITY]: {
+    'security': {
       icon: FiShield,
       label: 'Security',
       color: 'bg-red-100 text-red-800 border-red-200'
     }
   };
 
-  const config = roleConfig[role] || roleConfig[ROLES.ADMIN];
-  
+  const config = roleConfig[role] || roleConfig['admin'];
+
   const sizeClasses = {
     sm: 'px-2 py-1 text-xs',
     md: 'px-3 py-1 text-sm',

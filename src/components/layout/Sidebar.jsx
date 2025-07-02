@@ -3,17 +3,14 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
 import { useRBAC } from '../../contexts/RBACContext';
-import { useOrganization } from '../../contexts/OrganizationContext';
+import { useSite } from '../../contexts/SiteContext';
 import * as FiIcons from 'react-icons/fi';
 
-const { 
-  FiHome, FiMessageSquare, FiUsers, FiUserCheck, FiAlertTriangle, 
-  FiBarChart3, FiSettings, FiActivity, FiBuilding, FiGlobe 
-} = FiIcons;
+const { FiHome, FiMessageSquare, FiUsers, FiUserCheck, FiAlertTriangle, FiBarChart3, FiSettings, FiActivity } = FiIcons;
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const { currentUser } = useRBAC();
-  const { currentOrganization, currentBusinessUnit } = useOrganization();
+  const { currentSite } = useSite();
   const location = useLocation();
 
   const menuItems = [
@@ -23,8 +20,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { path: '/staff', icon: FiUserCheck, label: 'Staff' },
     { path: '/emergency', icon: FiAlertTriangle, label: 'Emergency', badge: 2 },
     { path: '/reports', icon: FiBarChart3, label: 'Reports' },
-    { path: '/organization', icon: FiGlobe, label: 'Organization' },
-    { path: '/business-units', icon: FiBuilding, label: 'Business Units' },
     { path: '/settings', icon: FiSettings, label: 'Settings' }
   ];
 
@@ -37,30 +32,54 @@ const Sidebar = ({ isOpen, onToggle }) => {
       {/* Header */}
       <div className="p-4">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <SafeIcon icon={FiActivity} className="w-5 h-5 text-white" />
+          <div 
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-white"
+            style={{ backgroundColor: currentSite?.theme?.primary || '#2563EB' }}
+          >
+            <SafeIcon icon={FiActivity} className="w-5 h-5" />
           </div>
           {isOpen && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="min-w-0 flex-1"
+              className="flex flex-col"
             >
-              <div className="text-xl font-bold text-gray-900 truncate">
-                {currentOrganization?.name || 'MedLinkX'}
+              <div className="text-lg font-bold text-gray-900">
+                {currentSite?.shortName || 'MedLinkX'}
               </div>
-              {currentBusinessUnit && (
-                <div className="text-xs text-gray-600 truncate">
-                  {currentBusinessUnit.name}
-                </div>
-              )}
+              <div className="text-xs text-gray-500">
+                {currentSite?.type || 'Hospital System'}
+              </div>
             </motion.div>
           )}
         </div>
       </div>
 
+      {/* Site Info Banner */}
+      {isOpen && currentSite && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          className="mx-2 mb-4 p-3 rounded-lg border"
+          style={{ 
+            backgroundColor: currentSite.theme.primary + '10',
+            borderColor: currentSite.theme.primary + '30'
+          }}
+        >
+          <div className="text-xs font-medium" style={{ color: currentSite.theme.primary }}>
+            Current Hospital
+          </div>
+          <div className="text-sm font-medium text-gray-900 truncate">
+            {currentSite.name}
+          </div>
+          <div className="text-xs text-gray-500 mt-1">
+            {currentSite.beds} beds • {currentSite.departments.length} departments
+          </div>
+        </motion.div>
+      )}
+
       {/* Navigation */}
-      <nav className="mt-8">
+      <nav className="mt-4">
         {menuItems.map((item) => (
           <NavLink
             key={item.path}
@@ -68,10 +87,13 @@ const Sidebar = ({ isOpen, onToggle }) => {
             className={({ isActive }) =>
               `flex items-center px-4 py-3 mx-2 rounded-lg transition-colors relative group ${
                 isActive
-                  ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600'
+                  ? `text-white shadow-sm`
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
               }`
             }
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? currentSite?.theme?.primary || '#2563EB' : 'transparent'
+            })}
           >
             <SafeIcon icon={item.icon} className="w-5 h-5 flex-shrink-0" />
             {isOpen && (
@@ -138,14 +160,9 @@ const Sidebar = ({ isOpen, onToggle }) => {
               <div className="font-medium text-gray-900 truncate">
                 {currentUser?.name || 'User'}
               </div>
-              <div className="text-gray-500 truncate">
-                {currentUser?.role?.replace('_', ' ') || 'Online'}
+              <div className="text-gray-500 truncate text-xs">
+                {currentUser?.role?.replace('_', ' ') || 'Online'} • {currentSite?.code}
               </div>
-              {currentBusinessUnit && (
-                <div className="text-xs text-blue-600 truncate">
-                  📍 {currentBusinessUnit.location.city}
-                </div>
-              )}
             </motion.div>
           )}
         </div>
@@ -155,12 +172,17 @@ const Sidebar = ({ isOpen, onToggle }) => {
       <button
         onClick={onToggle}
         className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full p-1 shadow-md hover:shadow-lg transition-shadow"
+        style={{ borderColor: currentSite?.theme?.primary + '30' || '#E5E7EB' }}
       >
         <motion.div
           animate={{ rotate: isOpen ? 0 : 180 }}
           transition={{ duration: 0.2 }}
         >
-          <SafeIcon icon={FiActivity} className="w-4 h-4 text-gray-600" />
+          <SafeIcon 
+            icon={FiActivity} 
+            className="w-4 h-4"
+            style={{ color: currentSite?.theme?.primary || '#6B7280' }}
+          />
         </motion.div>
       </button>
     </motion.div>

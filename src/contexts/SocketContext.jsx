@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNotification } from './NotificationContext';
 
 const SocketContext = createContext();
 
@@ -14,37 +13,25 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [hasShownConnectedNotification, setHasShownConnectedNotification] = useState(false);
-  const { addNotification } = useNotification();
 
   useEffect(() => {
-    // Check if we've already shown the notification in this session
-    const hasShownNotification = sessionStorage.getItem('socket_connected_notification');
-    
     // Simulate connection
     const timer = setTimeout(() => {
       setConnected(true);
-      setOnlineUsers([
+      
+      // Generate default online users
+      const defaultUsers = [
         { id: '1', name: 'Dr. Sarah Johnson', status: 'online' },
         { id: '2', name: 'Nurse Mary Smith', status: 'online' },
         { id: '3', name: 'Dr. Michael Brown', status: 'busy' },
         { id: '4', name: 'Emergency Team', status: 'online' },
         { id: '5', name: 'John Wilson', status: 'online' }
-      ]);
-
-      // Only show notification if we haven't shown it before in this session
-      if (!hasShownNotification && !hasShownConnectedNotification) {
-        addNotification({
-          type: 'success',
-          title: 'Connected',
-          message: 'Real-time messaging and calling is now active'
-        });
-        setHasShownConnectedNotification(true);
-        sessionStorage.setItem('socket_connected_notification', 'true');
-      }
+      ];
+      
+      setOnlineUsers(defaultUsers);
     }, 1000);
 
-    // Simulate periodic status updates (without notifications)
+    // Simulate periodic status updates
     const statusTimer = setInterval(() => {
       setOnlineUsers(prev => prev.map(user => ({
         ...user,
@@ -56,10 +43,11 @@ export const SocketProvider = ({ children }) => {
       clearTimeout(timer);
       clearInterval(statusTimer);
     };
-  }, []); // Remove addNotification from dependencies to prevent re-running
+  }, []);
 
   const sendMessage = async (message) => {
     console.log('Sending message:', message);
+    
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
@@ -78,6 +66,7 @@ export const SocketProvider = ({ children }) => {
 
   const initiateCall = async (contact, callType) => {
     console.log(`Initiating ${callType} call with:`, contact);
+    
     // Simulate call setup delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     

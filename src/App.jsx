@@ -10,23 +10,22 @@ import Staff from './components/staff/Staff';
 import Emergency from './components/emergency/Emergency';
 import Reports from './components/reports/Reports';
 import Settings from './components/settings/Settings';
-import OrganizationDashboard from './components/organization/OrganizationDashboard';
-import BusinessUnitManager from './components/organization/BusinessUnitManager';
 import Login from './components/auth/Login';
 import PermissionGate from './components/common/PermissionGate';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { RBACProvider, useRBAC } from './contexts/RBACContext';
+import { SiteProvider, useSite } from './contexts/SiteContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { SocketProvider } from './contexts/SocketContext';
-import { OrganizationProvider } from './contexts/OrganizationContext';
 import './App.css';
 
 function AppContent() {
   const { user, loading } = useAuth();
   const { currentUser } = useRBAC();
+  const { currentSite, loading: siteLoading } = useSite();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  if (loading) {
+  if (loading || siteLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <motion.div
@@ -42,6 +41,18 @@ function AppContent() {
     return <Login />;
   }
 
+  if (!currentSite) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🏥</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">No Hospital Selected</h2>
+          <p className="text-gray-600">Please select a hospital to continue</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar
@@ -54,51 +65,62 @@ function AppContent() {
           <AnimatePresence mode="wait">
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <Dashboard />
-                </PermissionGate>
-              } />
-              <Route path="/messages" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <Messages />
-                </PermissionGate>
-              } />
-              <Route path="/patients" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <Patients />
-                </PermissionGate>
-              } />
-              <Route path="/staff" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <Staff />
-                </PermissionGate>
-              } />
-              <Route path="/emergency" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <Emergency />
-                </PermissionGate>
-              } />
-              <Route path="/reports" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <Reports />
-                </PermissionGate>
-              } />
-              <Route path="/organization" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <OrganizationDashboard />
-                </PermissionGate>
-              } />
-              <Route path="/business-units" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <BusinessUnitManager />
-                </PermissionGate>
-              } />
-              <Route path="/settings" element={
-                <PermissionGate fallback={<AccessDenied />}>
-                  <Settings />
-                </PermissionGate>
-              } />
+              <Route
+                path="/dashboard"
+                element={
+                  <PermissionGate fallback={<AccessDenied />}>
+                    <Dashboard />
+                  </PermissionGate>
+                }
+              />
+              <Route
+                path="/messages"
+                element={
+                  <PermissionGate fallback={<AccessDenied />}>
+                    <Messages />
+                  </PermissionGate>
+                }
+              />
+              <Route
+                path="/patients"
+                element={
+                  <PermissionGate fallback={<AccessDenied />}>
+                    <Patients />
+                  </PermissionGate>
+                }
+              />
+              <Route
+                path="/staff"
+                element={
+                  <PermissionGate fallback={<AccessDenied />}>
+                    <Staff />
+                  </PermissionGate>
+                }
+              />
+              <Route
+                path="/emergency"
+                element={
+                  <PermissionGate fallback={<AccessDenied />}>
+                    <Emergency />
+                  </PermissionGate>
+                }
+              />
+              <Route
+                path="/reports"
+                element={
+                  <PermissionGate fallback={<AccessDenied />}>
+                    <Reports />
+                  </PermissionGate>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <PermissionGate fallback={<AccessDenied />}>
+                    <Settings />
+                  </PermissionGate>
+                }
+              />
             </Routes>
           </AnimatePresence>
         </main>
@@ -126,17 +148,17 @@ function AccessDenied() {
 function App() {
   return (
     <Router>
-      <RBACProvider>
-        <AuthProvider>
-          <NotificationProvider>
-            <OrganizationProvider>
+      <SiteProvider>
+        <RBACProvider>
+          <AuthProvider>
+            <NotificationProvider>
               <SocketProvider>
                 <AppContent />
               </SocketProvider>
-            </OrganizationProvider>
-          </NotificationProvider>
-        </AuthProvider>
-      </RBACProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </RBACProvider>
+      </SiteProvider>
     </Router>
   );
 }
