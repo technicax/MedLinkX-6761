@@ -14,29 +14,80 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const { addNotification } = useNotification();
 
   useEffect(() => {
+    // Simulate connection
     const timer = setTimeout(() => {
       setConnected(true);
       setOnlineUsers([
         { id: '1', name: 'Dr. Sarah Johnson', status: 'online' },
         { id: '2', name: 'Nurse Mary Smith', status: 'online' },
         { id: '3', name: 'Dr. Michael Brown', status: 'busy' },
+        { id: '4', name: 'Emergency Team', status: 'online' },
+        { id: '5', name: 'John Wilson', status: 'online' }
       ]);
+
+      addNotification({
+        type: 'success',
+        title: 'Connected',
+        message: 'Real-time messaging and calling is now active'
+      });
     }, 1000);
 
-    return () => clearTimeout(timer);
-  }, []);
+    // Simulate periodic status updates
+    const statusTimer = setInterval(() => {
+      setOnlineUsers(prev => prev.map(user => ({
+        ...user,
+        status: Math.random() > 0.8 ? 'busy' : 'online'
+      })));
+    }, 30000);
 
-  const sendMessage = (message) => {
+    return () => {
+      clearTimeout(timer);
+      clearInterval(statusTimer);
+    };
+  }, [addNotification]);
+
+  const sendMessage = async (message) => {
     console.log('Sending message:', message);
-    return Promise.resolve();
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Simulate success/failure
+    if (Math.random() > 0.1) { // 90% success rate
+      return Promise.resolve({
+        id: Date.now(),
+        ...message,
+        timestamp: new Date(),
+        status: 'sent'
+      });
+    } else {
+      throw new Error('Failed to send message');
+    }
+  };
+
+  const initiateCall = async (contact, callType) => {
+    console.log(`Initiating ${callType} call with:`, contact);
+    
+    // Simulate call setup delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    return Promise.resolve({
+      id: Date.now(),
+      contact,
+      callType,
+      status: 'connecting',
+      timestamp: new Date()
+    });
   };
 
   const value = {
     connected,
     onlineUsers,
-    sendMessage
+    sendMessage,
+    initiateCall
   };
 
   return (

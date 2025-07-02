@@ -22,70 +22,70 @@ const ROLES = {
 };
 
 const SAMPLE_USERS = {
-  'admin@hospital.com': {
+  'admin@medlinkx.com': {
     id: 'admin-1',
     name: 'Dr. Sarah Johnson',
-    email: 'admin@hospital.com',
+    email: 'admin@medlinkx.com',
     role: ROLES.ADMIN,
     department: 'Administration',
     avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
     phone: '(555) 001-0001',
     status: 'online'
   },
-  'doctor@hospital.com': {
+  'doctor@medlinkx.com': {
     id: 'doc-1',
     name: 'Dr. Michael Brown',
-    email: 'doctor@hospital.com',
+    email: 'doctor@medlinkx.com',
     role: ROLES.DOCTOR,
     department: 'Cardiology',
     avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face',
     phone: '(555) 001-0002',
     status: 'online'
   },
-  'nurse@hospital.com': {
+  'nurse@medlinkx.com': {
     id: 'nurse-1',
     name: 'Mary Smith',
-    email: 'nurse@hospital.com',
+    email: 'nurse@medlinkx.com',
     role: ROLES.NURSE,
     department: 'ICU',
     avatar: 'https://images.unsplash.com/photo-1594824475317-8b6b6d1a11a4?w=150&h=150&fit=crop&crop=face',
     phone: '(555) 001-0003',
     status: 'online'
   },
-  'technician@hospital.com': {
+  'technician@medlinkx.com': {
     id: 'tech-1',
     name: 'John Wilson',
-    email: 'technician@hospital.com',
+    email: 'technician@medlinkx.com',
     role: ROLES.TECHNICIAN,
     department: 'Laboratory',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
     phone: '(555) 001-0004',
     status: 'online'
   },
-  'receptionist@hospital.com': {
+  'receptionist@medlinkx.com': {
     id: 'recep-1',
     name: 'Emily Davis',
-    email: 'receptionist@hospital.com',
+    email: 'receptionist@medlinkx.com',
     role: ROLES.RECEPTIONIST,
     department: 'Front Desk',
     avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
     phone: '(555) 001-0005',
     status: 'online'
   },
-  'pharmacist@hospital.com': {
+  'pharmacist@medlinkx.com': {
     id: 'pharm-1',
     name: 'Dr. Lisa Chen',
-    email: 'pharmacist@hospital.com',
+    email: 'pharmacist@medlinkx.com',
     role: ROLES.PHARMACIST,
     department: 'Pharmacy',
     avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
     phone: '(555) 001-0006',
     status: 'online'
   },
-  'security@hospital.com': {
+  'security@medlinkx.com': {
     id: 'sec-1',
     name: 'Robert Wilson',
-    email: 'security@hospital.com',
+    email: 'security@medlinkx.com',
     role: ROLES.SECURITY,
     department: 'Security',
     avatar: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=150&h=150&fit=crop&crop=face',

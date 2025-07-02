@@ -76,7 +76,6 @@ const StaffDetails = ({ staff }) => {
               staff.status === 'busy' ? 'bg-yellow-500' : 'bg-gray-400'
             }`}></div>
           </div>
-          
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-gray-900">{staff.name}</h2>
@@ -89,9 +88,7 @@ const StaffDetails = ({ staff }) => {
                 </button>
               </div>
             </div>
-            
             <p className="text-sm text-gray-600 mt-1">{staff.role}</p>
-            
             <div className="mt-3">
               <span className={`px-3 py-1 text-sm font-medium rounded-full border ${getStatusColor(staff.status)}`}>
                 {staff.status.charAt(0).toUpperCase() + staff.status.slice(1)}
@@ -141,12 +138,10 @@ const StaffDetails = ({ staff }) => {
                 </div>
               </div>
             </div>
-            
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-3">Department</h3>
               <p className="text-gray-700 capitalize">{staff.department}</p>
             </div>
-            
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-3">Current Shift</h3>
               <div className="flex items-center text-gray-600">

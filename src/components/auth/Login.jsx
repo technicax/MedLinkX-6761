@@ -24,7 +24,6 @@ const Login = () => {
     try {
       const user = rbacLogin(email);
       await login({ email, password });
-      
       addNotification({
         type: 'success',
         title: 'Login Successful',
@@ -53,7 +52,7 @@ const Login = () => {
             <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <SafeIcon icon={FiActivity} className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Hospital Communication System</h1>
+            <h1 className="text-2xl font-bold text-gray-900">MedLinkX Communication System</h1>
             <p className="text-gray-600 mt-2">Sign in to access your dashboard</p>
           </div>
 
@@ -63,7 +62,10 @@ const Login = () => {
                 Email Address
               </label>
               <div className="relative">
-                <SafeIcon icon={FiMail} className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <SafeIcon 
+                  icon={FiMail} 
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" 
+                />
                 <input
                   type="email"
                   value={email}
@@ -80,7 +82,10 @@ const Login = () => {
                 Password
               </label>
               <div className="relative">
-                <SafeIcon icon={FiLock} className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <SafeIcon 
+                  icon={FiLock} 
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" 
+                />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
@@ -114,15 +119,15 @@ const Login = () => {
             <h3 className="font-medium text-gray-900 mb-2">Demo Login:</h3>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div>
-                <strong>Admin:</strong> admin@hospital.com<br />
-                <strong>Doctor:</strong> doctor@hospital.com<br />
-                <strong>Nurse:</strong> nurse@hospital.com<br />
-                <strong>Tech:</strong> technician@hospital.com
+                <strong>Admin:</strong> admin@medlinkx.com<br />
+                <strong>Doctor:</strong> doctor@medlinkx.com<br />
+                <strong>Nurse:</strong> nurse@medlinkx.com<br />
+                <strong>Tech:</strong> technician@medlinkx.com
               </div>
               <div>
-                <strong>Reception:</strong> receptionist@hospital.com<br />
-                <strong>Pharmacy:</strong> pharmacist@hospital.com<br />
-                <strong>Security:</strong> security@hospital.com<br />
+                <strong>Reception:</strong> receptionist@medlinkx.com<br />
+                <strong>Pharmacy:</strong> pharmacist@medlinkx.com<br />
+                <strong>Security:</strong> security@medlinkx.com<br />
                 <strong>Password:</strong> Any password
               </div>
             </div>
