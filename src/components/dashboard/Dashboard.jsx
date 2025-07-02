@@ -1,55 +1,93 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import StatsCards from './StatsCards';
+import PatientOverview from './PatientOverview';
+import QuickActions from './QuickActions';
+import RecentActivity from './RecentActivity';
+import AlertsPanel from './AlertsPanel';
+import AnalyticsDashboard from './AnalyticsDashboard';
+import KPIDashboard from './KPIDashboard';
+import PerformanceMetrics from './PerformanceMetrics';
+import RealTimeMonitor from './RealTimeMonitor';
+import SafeIcon from '../../common/SafeIcon';
+import * as FiIcons from 'react-icons/fi';
+
+const { FiHome, FiBarChart3, FiTrendingUp, FiActivity, FiMonitor } = FiIcons;
 
 const Dashboard = () => {
+  const [activeView, setActiveView] = useState('overview'); // 'overview', 'analytics', 'kpi', 'performance', 'realtime'
+
+  const dashboardViews = [
+    { id: 'overview', label: 'Overview', icon: FiHome },
+    { id: 'analytics', label: 'Analytics', icon: FiBarChart3 },
+    { id: 'kpi', label: 'KPIs', icon: FiTrendingUp },
+    { id: 'performance', label: 'Performance', icon: FiActivity },
+    { id: 'realtime', label: 'Real-time', icon: FiMonitor }
+  ];
+
+  const renderView = () => {
+    switch (activeView) {
+      case 'analytics':
+        return <AnalyticsDashboard />;
+      case 'kpi':
+        return <KPIDashboard />;
+      case 'performance':
+        return <PerformanceMetrics />;
+      case 'realtime':
+        return <RealTimeMonitor />;
+      default:
+        return (
+          <div className="space-y-6">
+            <StatsCards />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <PatientOverview />
+              <AlertsPanel />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <RecentActivity />
+              <QuickActions />
+            </div>
+          </div>
+        );
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="space-y-6"
     >
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <div className="text-sm text-gray-500">
-          Last updated: {new Date().toLocaleString()}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Hospital Dashboard</h1>
+          <p className="text-gray-600 mt-1">
+            Last updated: {new Date().toLocaleString()}
+          </p>
+        </div>
+        
+        {/* View Selector */}
+        <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+          {dashboardViews.map((view) => (
+            <button
+              key={view.id}
+              onClick={() => setActiveView(view.id)}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeView === view.id
+                  ? 'bg-white text-blue-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+            >
+              <SafeIcon icon={view.icon} className="w-4 h-4" />
+              <span>{view.label}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { title: 'Total Patients', value: '1,247', change: '+12%', color: 'blue' },
-          { title: 'Active Staff', value: '156', change: '+3%', color: 'green' },
-          { title: 'Critical Alerts', value: '8', change: '-25%', color: 'red' },
-          { title: 'Bed Occupancy', value: '89%', change: '+5%', color: 'yellow' }
-        ].map((stat, index) => (
-          <motion.div
-            key={stat.title}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-white rounded-xl p-6 shadow-sm border border-gray-200"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{stat.value}</p>
-              </div>
-            </div>
-            <div className="mt-4">
-              <span className="text-sm font-medium text-green-600">{stat.change}</span>
-              <span className="text-sm text-gray-500 ml-1">from last week</span>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Welcome to Hospital Communication System</h2>
-        <p className="text-gray-600">
-          This is a comprehensive hospital management system with role-based access control.
-          Navigate through different sections using the sidebar menu.
-        </p>
-      </div>
+      {/* Content */}
+      {renderView()}
     </motion.div>
   );
 };
