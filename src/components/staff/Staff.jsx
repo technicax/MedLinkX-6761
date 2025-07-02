@@ -17,7 +17,7 @@ const Staff = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterRole, setFilterRole] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [activeView, setActiveView] = useState('staff'); // 'staff', 'teams', 'departments'
+  const [activeView, setActiveView] = useState('staff');
 
   const departments = [
     { value: 'all', label: 'All Departments' },
@@ -51,7 +51,14 @@ const Staff = () => {
 
   const handleStaffAdded = () => {
     setShowAddModal(false);
-    // Refresh staff list
+  };
+
+  const handleViewChange = (viewId) => {
+    setActiveView(viewId);
+    // Reset selected staff when changing views
+    if (viewId !== 'staff') {
+      setSelectedStaff(null);
+    }
   };
 
   const renderView = () => {
@@ -110,7 +117,6 @@ const Staff = () => {
           <h1 className="text-2xl font-bold text-gray-900">Staff Management</h1>
           <p className="text-gray-600 mt-1">Manage hospital staff, teams, and departments</p>
         </div>
-        
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setShowAddModal(true)}
@@ -125,7 +131,7 @@ const Staff = () => {
       {/* Navigation Tabs */}
       <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
         <button
-          onClick={() => setActiveView('staff')}
+          onClick={() => handleViewChange('staff')}
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeView === 'staff'
               ? 'bg-white text-blue-600 shadow-sm'
@@ -135,9 +141,9 @@ const Staff = () => {
           <SafeIcon icon={FiUsers} className="w-4 h-4" />
           <span>Staff Members</span>
         </button>
-        
+
         <button
-          onClick={() => setActiveView('teams')}
+          onClick={() => handleViewChange('teams')}
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeView === 'teams'
               ? 'bg-white text-blue-600 shadow-sm'
@@ -147,9 +153,9 @@ const Staff = () => {
           <SafeIcon icon={FiUsers} className="w-4 h-4" />
           <span>Teams</span>
         </button>
-        
+
         <button
-          onClick={() => setActiveView('departments')}
+          onClick={() => handleViewChange('departments')}
           className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
             activeView === 'departments'
               ? 'bg-white text-blue-600 shadow-sm'
@@ -220,7 +226,14 @@ const Staff = () => {
       )}
 
       {/* Content */}
-      {renderView()}
+      <motion.div
+        key={activeView}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {renderView()}
+      </motion.div>
 
       {/* Add Staff Modal */}
       {showAddModal && (

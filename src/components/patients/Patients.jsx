@@ -17,7 +17,7 @@ const Patients = () => {
   const [filterDepartment, setFilterDepartment] = useState('all');
   const [filterPriority, setFilterPriority] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [viewMode, setViewMode] = useState('list'); // 'list', 'grid', 'details'
+  const [viewMode, setViewMode] = useState('list');
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },
@@ -48,7 +48,6 @@ const Patients = () => {
 
   const handlePatientAdded = () => {
     setShowAddModal(false);
-    // Refresh patient list logic would go here
   };
 
   const clearFilters = () => {
@@ -72,7 +71,6 @@ const Patients = () => {
             Comprehensive patient records and care coordination
           </p>
         </div>
-        
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setShowAddModal(true)}
@@ -153,7 +151,7 @@ const Patients = () => {
         </div>
 
         {/* Advanced Search Component */}
-        <PatientSearch 
+        <PatientSearch
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
         />
@@ -178,8 +176,8 @@ const Patients = () => {
         {/* Patient Details */}
         <div className="lg:col-span-1">
           {selectedPatient ? (
-            <PatientDetails 
-              patient={selectedPatient} 
+            <PatientDetails
+              patient={selectedPatient}
               onPatientUpdate={(updatedPatient) => setSelectedPatient(updatedPatient)}
             />
           ) : (

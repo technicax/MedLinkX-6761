@@ -6,7 +6,18 @@ import ContactList from './ContactList';
 
 const Messages = () => {
   const [selectedContact, setSelectedContact] = useState(null);
-  const [activeView, setActiveView] = useState('conversations'); // 'conversations' or 'contacts'
+  const [activeView, setActiveView] = useState('conversations');
+
+  const handleViewChange = (viewId) => {
+    setActiveView(viewId);
+  };
+
+  const handleSelectContact = (contact) => {
+    setSelectedContact(contact);
+    if (activeView === 'contacts') {
+      setActiveView('conversations');
+    }
+  };
 
   return (
     <motion.div
@@ -18,7 +29,7 @@ const Messages = () => {
         <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
         <div className="flex items-center space-x-2">
           <button
-            onClick={() => setActiveView('conversations')}
+            onClick={() => handleViewChange('conversations')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeView === 'conversations'
                 ? 'bg-blue-600 text-white'
@@ -28,7 +39,7 @@ const Messages = () => {
             Conversations
           </button>
           <button
-            onClick={() => setActiveView('contacts')}
+            onClick={() => handleViewChange('contacts')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeView === 'contacts'
                 ? 'bg-blue-600 text-white'
@@ -46,14 +57,11 @@ const Messages = () => {
           {activeView === 'conversations' ? (
             <MessageList
               selectedContact={selectedContact}
-              onSelectContact={setSelectedContact}
+              onSelectContact={handleSelectContact}
             />
           ) : (
             <ContactList
-              onSelectContact={(contact) => {
-                setSelectedContact(contact);
-                setActiveView('conversations');
-              }}
+              onSelectContact={handleSelectContact}
             />
           )}
         </div>

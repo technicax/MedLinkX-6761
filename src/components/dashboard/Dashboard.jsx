@@ -15,7 +15,7 @@ import * as FiIcons from 'react-icons/fi';
 const { FiHome, FiBarChart3, FiTrendingUp, FiActivity, FiMonitor } = FiIcons;
 
 const Dashboard = () => {
-  const [activeView, setActiveView] = useState('overview'); // 'overview', 'analytics', 'kpi', 'performance', 'realtime'
+  const [activeView, setActiveView] = useState('overview');
 
   const dashboardViews = [
     { id: 'overview', label: 'Overview', icon: FiHome },
@@ -24,6 +24,10 @@ const Dashboard = () => {
     { id: 'performance', label: 'Performance', icon: FiActivity },
     { id: 'realtime', label: 'Real-time', icon: FiMonitor }
   ];
+
+  const handleViewChange = (viewId) => {
+    setActiveView(viewId);
+  };
 
   const renderView = () => {
     switch (activeView) {
@@ -66,13 +70,13 @@ const Dashboard = () => {
             Last updated: {new Date().toLocaleString()}
           </p>
         </div>
-        
+
         {/* View Selector */}
         <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
           {dashboardViews.map((view) => (
             <button
               key={view.id}
-              onClick={() => setActiveView(view.id)}
+              onClick={() => handleViewChange(view.id)}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeView === view.id
                   ? 'bg-white text-blue-600 shadow-sm'
@@ -87,7 +91,15 @@ const Dashboard = () => {
       </div>
 
       {/* Content */}
-      {renderView()}
+      <motion.div
+        key={activeView}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.3 }}
+      >
+        {renderView()}
+      </motion.div>
     </motion.div>
   );
 };

@@ -23,6 +23,10 @@ const Emergency = () => {
     { id: 'contacts', label: 'Contacts', icon: FiUsers }
   ];
 
+  const handleViewChange = (viewId) => {
+    setActiveView(viewId);
+  };
+
   const renderView = () => {
     switch (activeView) {
       case 'alerts':
@@ -54,7 +58,6 @@ const Emergency = () => {
             Comprehensive emergency response and crisis management system
           </p>
         </div>
-        
         <div className="flex items-center space-x-3">
           <motion.button
             whileHover={{ scale: 1.02 }}
@@ -72,7 +75,7 @@ const Emergency = () => {
         {views.map((view) => (
           <button
             key={view.id}
-            onClick={() => setActiveView(view.id)}
+            onClick={() => handleViewChange(view.id)}
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
               activeView === view.id
                 ? 'bg-white text-red-600 shadow-sm'
@@ -86,9 +89,15 @@ const Emergency = () => {
       </div>
 
       {/* Content */}
-      <div className="min-h-[calc(100vh-20rem)]">
+      <motion.div
+        key={activeView}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="min-h-[calc(100vh-20rem)]"
+      >
         {renderView()}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };

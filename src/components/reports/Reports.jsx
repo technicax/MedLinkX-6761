@@ -20,17 +20,28 @@ const Reports = () => {
     { id: 'viewer', label: 'Viewer', icon: FiEye }
   ];
 
+  const handleViewChange = (viewId) => {
+    setActiveView(viewId);
+  };
+
+  const handleViewReport = (report) => {
+    setSelectedReport(report);
+    setActiveView('viewer');
+  };
+
+  const handleBackToHistory = () => {
+    setActiveView('history');
+    setSelectedReport(null);
+  };
+
   const renderView = () => {
     switch (activeView) {
       case 'generator':
         return <ReportsGenerator />;
       case 'history':
-        return <ReportsHistory onViewReport={(report) => {
-          setSelectedReport(report);
-          setActiveView('viewer');
-        }} />;
+        return <ReportsHistory onViewReport={handleViewReport} />;
       case 'viewer':
-        return <ReportsViewer report={selectedReport} onBack={() => setActiveView('history')} />;
+        return <ReportsViewer report={selectedReport} onBack={handleBackToHistory} />;
       default:
         return <ReportsDashboard />;
     }
@@ -57,7 +68,7 @@ const Reports = () => {
         {views.map((view) => (
           <button
             key={view.id}
-            onClick={() => setActiveView(view.id)}
+            onClick={() => handleViewChange(view.id)}
             className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeView === view.id
                 ? 'bg-white text-blue-600 shadow-sm'
@@ -71,9 +82,15 @@ const Reports = () => {
       </div>
 
       {/* Content */}
-      <div className="min-h-[calc(100vh-16rem)]">
+      <motion.div
+        key={activeView}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="min-h-[calc(100vh-16rem)]"
+      >
         {renderView()}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
