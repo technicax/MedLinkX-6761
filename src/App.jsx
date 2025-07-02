@@ -10,11 +10,13 @@ import Staff from './components/staff/Staff';
 import Emergency from './components/emergency/Emergency';
 import Reports from './components/reports/Reports';
 import Settings from './components/settings/Settings';
+import AdminPanel from './components/admin/AdminPanel';
 import Login from './components/auth/Login';
 import PermissionGate from './components/common/PermissionGate';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { RBACProvider, useRBAC } from './contexts/RBACContext';
 import { SiteProvider, useSite } from './contexts/SiteContext';
+import { UserAccessProvider, useUserAccess } from './contexts/UserAccessContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { SocketProvider } from './contexts/SocketContext';
 import './App.css';
@@ -23,6 +25,7 @@ function AppContent() {
   const { user, loading } = useAuth();
   const { currentUser } = useRBAC();
   const { currentSite, loading: siteLoading } = useSite();
+  const { getUserAccessibleSites } = useUserAccess();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   if (loading || siteLoading) {
@@ -114,6 +117,14 @@ function AppContent() {
                 }
               />
               <Route
+                path="/admin"
+                element={
+                  <PermissionGate fallback={<AccessDenied />}>
+                    <AdminPanel />
+                  </PermissionGate>
+                }
+              />
+              <Route
                 path="/settings"
                 element={
                   <PermissionGate fallback={<AccessDenied />}>
@@ -149,15 +160,17 @@ function App() {
   return (
     <Router>
       <SiteProvider>
-        <RBACProvider>
-          <AuthProvider>
-            <NotificationProvider>
-              <SocketProvider>
-                <AppContent />
-              </SocketProvider>
-            </NotificationProvider>
-          </AuthProvider>
-        </RBACProvider>
+        <UserAccessProvider>
+          <RBACProvider>
+            <AuthProvider>
+              <NotificationProvider>
+                <SocketProvider>
+                  <AppContent />
+                </SocketProvider>
+              </NotificationProvider>
+            </AuthProvider>
+          </RBACProvider>
+        </UserAccessProvider>
       </SiteProvider>
     </Router>
   );
