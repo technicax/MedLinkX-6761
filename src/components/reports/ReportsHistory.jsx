@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import SafeIcon from '../../common/SafeIcon';
+import { useNotification } from '../../contexts/NotificationContext';
 import * as FiIcons from 'react-icons/fi';
 
 const { FiDownload, FiEye, FiTrash2, FiSearch, FiFilter, FiCalendar } = FiIcons;
 
-const ReportsHistory = () => {
+const ReportsHistory = ({ onViewReport }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const { addNotification } = useNotification();
 
   const reports = [
     {
@@ -122,6 +124,22 @@ const ReportsHistory = () => {
     ).join(' ');
   };
 
+  const handleDownload = (report) => {
+    addNotification({
+      type: 'success',
+      title: 'Download Started',
+      message: `${report.name} is being downloaded`
+    });
+  };
+
+  const handleDelete = (report) => {
+    addNotification({
+      type: 'success',
+      title: 'Report Deleted',
+      message: `${report.name} has been deleted`
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -143,7 +161,6 @@ const ReportsHistory = () => {
             className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
@@ -155,7 +172,6 @@ const ReportsHistory = () => {
             </option>
           ))}
         </select>
-        
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
@@ -226,26 +242,27 @@ const ReportsHistory = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => onViewReport(report)}
                         className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         title="View Report"
                       >
                         <SafeIcon icon={FiEye} className="w-4 h-4" />
                       </motion.button>
-                      
                       {report.status === 'completed' && (
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
+                          onClick={() => handleDownload(report)}
                           className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                           title="Download Report"
                         >
                           <SafeIcon icon={FiDownload} className="w-4 h-4" />
                         </motion.button>
                       )}
-                      
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => handleDelete(report)}
                         className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete Report"
                       >
@@ -258,7 +275,7 @@ const ReportsHistory = () => {
             </tbody>
           </table>
         </div>
-        
+
         {filteredReports.length === 0 && (
           <div className="text-center py-8">
             <div className="text-4xl mb-4">📊</div>

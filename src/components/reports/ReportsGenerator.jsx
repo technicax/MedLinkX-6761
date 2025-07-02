@@ -4,23 +4,55 @@ import SafeIcon from '../../common/SafeIcon';
 import { useNotification } from '../../contexts/NotificationContext';
 import * as FiIcons from 'react-icons/fi';
 
-const { FiCalendar, FiDownload, FiFilter, FiFileText } = FiIcons;
+const { FiCalendar, FiDownload, FiFilter, FiFileText, FiBarChart3 } = FiIcons;
 
 const ReportsGenerator = () => {
   const [reportType, setReportType] = useState('patient-summary');
   const [dateRange, setDateRange] = useState('last-month');
   const [department, setDepartment] = useState('all');
   const [format, setFormat] = useState('pdf');
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
   const [loading, setLoading] = useState(false);
   const { addNotification } = useNotification();
 
   const reportTypes = [
-    { value: 'patient-summary', label: 'Patient Summary Report', description: 'Comprehensive overview of patient admissions, discharges, and demographics' },
-    { value: 'financial', label: 'Financial Report', description: 'Revenue, expenses, and billing analysis' },
-    { value: 'staff-performance', label: 'Staff Performance Report', description: 'Staff productivity, schedules, and performance metrics' },
-    { value: 'department-analytics', label: 'Department Analytics', description: 'Department-wise patient flow and resource utilization' },
-    { value: 'quality-metrics', label: 'Quality Metrics Report', description: 'Patient satisfaction, readmission rates, and quality indicators' },
-    { value: 'inventory', label: 'Inventory Report', description: 'Medical supplies, equipment, and medication inventory' }
+    {
+      value: 'patient-summary',
+      label: 'Patient Summary Report',
+      description: 'Comprehensive overview of patient admissions, discharges, and demographics',
+      icon: FiFileText
+    },
+    {
+      value: 'financial',
+      label: 'Financial Report',
+      description: 'Revenue, expenses, and billing analysis',
+      icon: FiBarChart3
+    },
+    {
+      value: 'staff-performance',
+      label: 'Staff Performance Report',
+      description: 'Staff productivity, schedules, and performance metrics',
+      icon: FiFileText
+    },
+    {
+      value: 'department-analytics',
+      label: 'Department Analytics',
+      description: 'Department-wise patient flow and resource utilization',
+      icon: FiBarChart3
+    },
+    {
+      value: 'quality-metrics',
+      label: 'Quality Metrics Report',
+      description: 'Patient satisfaction, readmission rates, and quality indicators',
+      icon: FiFileText
+    },
+    {
+      value: 'inventory',
+      label: 'Inventory Report',
+      description: 'Medical supplies, equipment, and medication inventory',
+      icon: FiFileText
+    }
   ];
 
   const dateRanges = [
@@ -55,13 +87,22 @@ const ReportsGenerator = () => {
 
     try {
       // Simulate report generation
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
       
       addNotification({
         type: 'success',
-        title: 'Report Generated',
-        message: 'Your report has been generated successfully and is ready for download'
+        title: 'Report Generated Successfully',
+        message: 'Your report has been generated and is ready for download'
       });
+
+      // Reset form
+      setReportType('patient-summary');
+      setDateRange('last-month');
+      setDepartment('all');
+      setFormat('pdf');
+      setCustomStartDate('');
+      setCustomEndDate('');
+      
     } catch (error) {
       addNotification({
         type: 'error',
@@ -109,6 +150,7 @@ const ReportsGenerator = () => {
                     onChange={(e) => setReportType(e.target.value)}
                     className="mt-1"
                   />
+                  <SafeIcon icon={type.icon} className="w-5 h-5 text-blue-600 mt-0.5" />
                   <div>
                     <h3 className="font-medium text-gray-900">{type.label}</h3>
                     <p className="text-sm text-gray-600 mt-1">{type.description}</p>
@@ -192,6 +234,8 @@ const ReportsGenerator = () => {
               </label>
               <input
                 type="date"
+                value={customStartDate}
+                onChange={(e) => setCustomStartDate(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -201,6 +245,8 @@ const ReportsGenerator = () => {
               </label>
               <input
                 type="date"
+                value={customEndDate}
+                onChange={(e) => setCustomEndDate(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -234,7 +280,16 @@ const ReportsGenerator = () => {
             className="flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <SafeIcon icon={FiDownload} className="w-4 h-4" />
-            <span>{loading ? 'Generating...' : 'Generate Report'}</span>
+            <span>
+              {loading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Generating...</span>
+                </div>
+              ) : (
+                'Generate Report'
+              )}
+            </span>
           </motion.button>
         </div>
       </form>
